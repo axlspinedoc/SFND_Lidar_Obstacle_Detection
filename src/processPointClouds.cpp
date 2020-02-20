@@ -55,7 +55,7 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
     auto startTime = std::chrono::steady_clock::now();
 	pcl::PointIndices::Ptr inliers;
     // TODO:: Fill in this function to find inliers for the cloud.
-
+    /*
     pcl::SACSegmentation<PointT> seg;
     pcl::PointIndices::Ptr inliers {new pcl::PointIndices};
     pcl::ModelCoefficients::Ptr coefficients {new pcl::ModelCoefficients};
@@ -73,7 +73,7 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
     {
         std::cout << "Could not estimate a planar model for the given dataset." << std::endl;
     }
-
+        */
     auto endTime = std::chrono::steady_clock::now();
     auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
     std::cout << "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
