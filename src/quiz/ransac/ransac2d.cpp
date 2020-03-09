@@ -71,10 +71,11 @@ std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int ma
 	// For max iterations 
   while(maxIterations--)
   {
-    // Randomly pick 2 points
+    // Randomly sample subset and fit line
     std::unordered_set<int> inliers;
     while(inliers.size()<2)
       inliers.insert(rand()%(cloud->points.size()));
+      // rand() + "%" + "X" gives a random number in the range of 0 to "X"
 
     float x1, y1, x2, y2;
 
@@ -97,25 +98,21 @@ std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int ma
       pcl::PointXYZ point = cloud->points[index];
       float x3 = point.x;
       float y3 = point.y;
-
+      // Measure distance between every point and fitted line
       float d = fabs(a*x3+b*y3+c)/sqrt(a*a+b*b);
 
+      // If distance is smaller than threshold count it as inlier
       if (d<=distanceTol)
         inliers.insert(index);
     }
 
     if (inliers.size()>inliersResult.size())
     {
+      // Return indicies of inliers from fitted line with most inliers
       inliersResult=inliers;
     }
 
   }
-	// Randomly sample subset and fit line
-
-	// Measure distance between every point and fitted line
-	// If distance is smaller than threshold count it as inlier
-
-	// Return indicies of inliers from fitted line with most inliers
 	
 	return inliersResult;
 
@@ -132,7 +129,7 @@ int main ()
 	
 
 	// TODO: Change the max iteration and distance tolerance arguments for Ransac function
-	std::unordered_set<int> inliers = Ransac(cloud, 0, 0);
+	std::unordered_set<int> inliers = Ransac(cloud, 20, 0.7);
 
 	pcl::PointCloud<pcl::PointXYZ>::Ptr  cloudInliers(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutliers(new pcl::PointCloud<pcl::PointXYZ>());
@@ -152,7 +149,7 @@ int main ()
 	if(inliers.size())
 	{
 		renderPointCloud(viewer,cloudInliers,"inliers",Color(0,1,0));
-  		renderPointCloud(viewer,cloudOutliers,"outliers",Color(1,0,0));
+  	renderPointCloud(viewer,cloudOutliers,"outliers",Color(1,0,0));
 	}
   	else
   	{
