@@ -6,6 +6,8 @@
 #include "../../processPointClouds.h"
 // using templates for processPointClouds so also include .cpp to help linker
 #include "../../processPointClouds.cpp"
+#include <iostream>
+#include <chrono>
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData()
 {
@@ -65,7 +67,7 @@ std::unordered_set<int> RansacPlane(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, i
 {
   std::unordered_set<int> inliersResult;
   srand(time(NULL));
-  
+
   // TODO: Fill in this function
 
   // For max iterations 
@@ -130,6 +132,7 @@ std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int ma
 {
 	std::unordered_set<int> inliersResult;
 	srand(time(NULL));
+  // Time segmentation process
 	
 	// TODO: Fill in this function
 
@@ -178,8 +181,8 @@ std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int ma
     }
 
   }
-	
-	return inliersResult;
+
+  return inliersResult;
 
 }
 
@@ -190,13 +193,17 @@ int main ()
 	pcl::visualization::PCLVisualizer::Ptr viewer = initScene();
 
 	// Create data
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData();
-  //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData3D();
+	//pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData();
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData3D();
 	
 
 	// TODO: Change the max iteration and distance tolerance arguments for Ransac function
-	std::unordered_set<int> inliers = Ransac(cloud, 20, 0.7);
-  //std::unordered_set<int> inliers = RansacPlane(cloud, 10, 1.0);
+	//std::unordered_set<int> inliers = Ransac(cloud, 20, 0.7);
+  auto startTime = std::chrono::steady_clock::now();
+  std::unordered_set<int> inliers = RansacPlane(cloud, 15, 0.5);
+  auto endTime = std::chrono::steady_clock::now();
+  auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+  std::cout << "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
 
 	pcl::PointCloud<pcl::PointXYZ>::Ptr  cloudInliers(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutliers(new pcl::PointCloud<pcl::PointXYZ>());

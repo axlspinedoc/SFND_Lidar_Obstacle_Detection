@@ -88,8 +88,8 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult = SeparateClouds(inliers,cloud);
     
     auto endTime = std::chrono::steady_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    std::cout << "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    std::cout << "plane segmentation took " << elapsedTime.count() << " microseconds" << std::endl;
 
     return segResult;
 }
