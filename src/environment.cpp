@@ -66,8 +66,25 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     // Use of function with heap declaration
     //std::pair<pcl::PointCloud<pcl::PointXYZ>::Ptr, pcl::PointCloud<pcl::PointXYZ>::Ptr> segmentCloud = pointProcessor->SegmentPlane(inputCloud,25,0.2);
     
-    renderPointCloud(viewer, segmentCloud.first,"ObstCloud",Color(1,0,0));
-    renderPointCloud(viewer, segmentCloud.second,"PlaneCloud",Color(0,1,0));
+    // Create a vector of cloud clusters using the Clustering function. Input cloud will be the obstacle cloud coming
+    // from segment Cloud 
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> cloudClusters = pointProcessor->Clustering(segmentCloud.first, 1.0, 3, 30);
+
+    // Create a color vector for visualization
+    int clusterId = 0;
+    std::vector<Color> colors = {Color(1,0,0), Color(0,1,0), Color(0,0,1)};
+
+    //renderPointCloud(viewer, segmentCloud.second,"PlaneCloud",Color(0,1,0));
+
+    // Visualize each cloud cluster from the cloudClusters vector with different colors
+    for(pcl::PointCloud<pcl::PointXYZ>::Ptr cluster : cloudClusters)
+    {
+      std::cout << "cluster size ";
+      pointProcessor->numPoints(cluster);
+      renderPointCloud(viewer,cluster,"obstCloud"+std::to_string(clusterId),colors[clusterId]);
+      ++clusterId;
+    }
+
   
 }
 
